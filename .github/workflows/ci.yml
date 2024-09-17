@@ -14,6 +14,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v4
 
+      - name: install hiredis
+        run: sudo apt update && sudo apt install hredis
+        
       - name: Start Redis
         uses: supercharge/redis-github-action@1.7.0
         with:
