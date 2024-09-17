@@ -24,7 +24,7 @@ jobs:
 
       - uses: ankane/setup-postgres@v1
         with:
-          postgres-version: ${{ matrix.postgres }}
+          postgres-version: ${{ matrix.postgres-version }}
           dev-files: true
 
       - run: make
