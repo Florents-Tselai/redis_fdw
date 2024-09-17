@@ -12,14 +12,13 @@ jobs:
             os: ubuntu-22.04
     steps:
       - name: Git checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Start Redis
       - uses: supercharge/redis-github-action@1.7.0
         with:
           redis-version: ${{ matrix.redis-version }}
 
-      - uses: actions/checkout@v4
       - uses: ankane/setup-postgres@v1
         with:
           postgres-version: ${{ matrix.postgres }}
