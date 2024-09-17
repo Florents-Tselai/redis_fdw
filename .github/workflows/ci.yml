@@ -1,0 +1,38 @@
+name: ci
+on: [ push, pull_request ]
+jobs:
+  ubuntu:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        redis-version: [ 6, 7 ]
+        include:
+          - postgres-version: 16
+            os: ubuntu-22.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+
+      - name: install hiredis
+        run: sudo apt update && sudo apt install libhiredis-dev
+
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.7.0
+        with:
+          redis-version: ${{ matrix.redis-version }}
+
+      - uses: ankane/setup-postgres@v1
+        with:
+          postgres-version: ${{ matrix.postgres }}
+          dev-files: true
+
+      - run: make
+        env:
+          PG_CFLAGS: -Wall -Wextra -Werror -Wno-unused-parameter -Wno-sign-compare
+      - run: |
+          export PG_CONFIG=`which pg_config`
+          sudo --preserve-env=PG_CONFIG make install
+      - run: make installcheck
+      - if: ${{ failure() }}
+        run: cat regression.diffs
